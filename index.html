@@ -1,0 +1,1189 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control Escolar</title>
+
+    <style>
+        *{
+            box-sizing:border-box;
+        }
+
+        body{
+            margin:0;
+            font-family:Arial, sans-serif;
+            background:#eefafa;
+            color:#333;
+        }
+
+        .login{
+            width:350px;
+            margin:80px auto;
+            background:white;
+            padding:30px;
+            border-radius:12px;
+            box-shadow:0 3px 12px #aaa;
+            text-align:center;
+        }
+
+        .login h1{
+            color:#3d9da5;
+        }
+
+        input, select{
+            width:100%;
+            padding:11px;
+            margin:7px 0;
+            border:1px solid #bbb;
+            border-radius:6px;
+        }
+
+        button{
+            border:0;
+            padding:10px 15px;
+            border-radius:6px;
+            cursor:pointer;
+            background:#55b9c0;
+            color:white;
+            margin:4px;
+        }
+
+        button:hover{
+            background:#3d9da5;
+        }
+
+        .eliminar{
+            background:#d77c7c;
+        }
+
+        .eliminar:hover{
+            background:#bd5d5d;
+        }
+
+        .oculto{
+            display:none;
+        }
+
+        .contenedor{
+            display:flex;
+            min-height:100vh;
+        }
+
+        .menu{
+            width:220px;
+            background:#d8f2f1;
+            padding:20px;
+        }
+
+        .menu h2{
+            color:#357f86;
+        }
+
+        .menu button{
+            width:100%;
+            background:white;
+            color:#357f86;
+            text-align:left;
+        }
+
+        .menu button:hover{
+            background:#bfe4e3;
+        }
+
+        .contenido{
+            flex:1;
+            padding:25px;
+        }
+
+        .caja{
+            background:white;
+            padding:20px;
+            border-radius:10px;
+            box-shadow:0 2px 8px #ccc;
+            margin-bottom:20px;
+        }
+
+        table{
+            width:100%;
+            border-collapse:collapse;
+            margin-top:15px;
+        }
+
+        th{
+            background:#75bfc5;
+            color:white;
+        }
+
+        th, td{
+            border:1px solid #ccc;
+            padding:9px;
+            text-align:center;
+        }
+
+        .tarjetas{
+            display:flex;
+            gap:15px;
+            flex-wrap:wrap;
+        }
+
+        .tarjeta{
+            background:#e1f5f4;
+            padding:20px;
+            border-radius:10px;
+            min-width:180px;
+        }
+
+        .mensaje{
+            margin-top:10px;
+            font-weight:bold;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- LOGIN -->
+
+<div id="login" class="login">
+
+    <h1>Control Escolar</h1>
+
+    <p>Iniciar sesión</p>
+
+    <input type="text" id="usuario" placeholder="Usuario">
+
+    <input type="password" id="password" placeholder="Contraseña">
+
+    <button onclick="iniciarSesion()">Iniciar sesión</button>
+
+    <p>
+        Usuario demo: <b>admin</b><br>
+        Contraseña: <b>1234</b>
+    </p>
+
+    <div id="mensajeLogin" class="mensaje"></div>
+
+</div>
+
+
+<!-- SISTEMA -->
+
+<div id="sistema" class="contenedor oculto">
+
+    <div class="menu">
+
+        <h2>Control Escolar</h2>
+
+        <p>Usuario: <b id="usuarioActual"></b></p>
+
+        <button onclick="mostrar('inicio')">Inicio</button>
+        <button onclick="mostrar('alumnos')">Alumnos</button>
+        <button onclick="mostrar('citas')">Citas</button>
+        <button onclick="mostrar('materias')">Materias</button>
+        <button onclick="mostrar('calificaciones')">Calificaciones</button>
+        <button onclick="mostrar('asistencias')">Asistencias</button>
+
+        <br>
+
+        <button onclick="cerrarSesion()">Cerrar sesión</button>
+
+    </div>
+
+
+    <div class="contenido">
+
+        <!-- INICIO -->
+
+        <section id="inicio" class="seccion">
+
+            <h1>Inicio</h1>
+
+            <div class="tarjetas">
+
+                <div class="tarjeta">
+                    <h3>Alumnos</h3>
+                    <h2 id="totalAlumnos">0</h2>
+                </div>
+
+                <div class="tarjeta">
+                    <h3>Citas</h3>
+                    <h2 id="totalCitas">0</h2>
+                </div>
+
+                <div class="tarjeta">
+                    <h3>Materias</h3>
+                    <h2 id="totalMaterias">0</h2>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ALUMNOS -->
+
+        <section id="alumnos" class="seccion oculto">
+
+            <div class="caja">
+
+                <h1>Alumnos</h1>
+
+                <input type="text" id="nombreAlumno" placeholder="Nombre">
+
+                <input type="text" id="matriculaAlumno" placeholder="Matrícula">
+
+                <input type="text" id="semestreAlumno" placeholder="Semestre">
+
+                <input type="text" id="carreraAlumno" placeholder="Carrera">
+
+                <button onclick="agregarAlumno()">Registrar alumno</button>
+
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Matrícula</th>
+                            <th>Semestre</th>
+                            <th>Carrera</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="tablaAlumnos"></tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+
+        <!-- CITAS -->
+
+        <section id="citas" class="seccion oculto">
+
+            <div class="caja">
+
+                <h1>Control de Citas</h1>
+
+                <input type="text" id="nombreCita" placeholder="Nombre">
+
+                <input type="text" id="matriculaCita" placeholder="Matrícula">
+
+                <input type="text" id="semestreCita" placeholder="Semestre">
+
+                <input type="text" id="carreraCita" placeholder="Carrera">
+
+                <input type="date" id="fechaCita">
+
+                <input type="time" id="horaCita">
+
+                <button onclick="registrarCita()">Registrar cita</button>
+
+                <br>
+
+                <input
+                    type="text"
+                    id="buscarCita"
+                    placeholder="Buscar cita..."
+                    onkeyup="mostrarCitas()"
+                >
+
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Matrícula</th>
+                            <th>Semestre</th>
+                            <th>Carrera</th>
+                            <th>Fecha</th>
+                            <th>Hora</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="tablaCitas"></tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+
+        <!-- MATERIAS -->
+
+        <section id="materias" class="seccion oculto">
+
+            <div class="caja">
+
+                <h1>Materias</h1>
+
+                <input type="text" id="nombreMateria" placeholder="Nombre de materia">
+
+                <button onclick="agregarMateria()">Agregar materia</button>
+
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th>Materia</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="tablaMaterias"></tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+
+        <!-- CALIFICACIONES -->
+
+        <section id="calificaciones" class="seccion oculto">
+
+            <div class="caja">
+
+                <h1>Calificaciones</h1>
+
+                <input type="text" id="alumnoCalificacion" placeholder="Alumno">
+
+                <input type="text" id="materiaCalificacion" placeholder="Materia">
+
+                <input type="number" id="calificacion" placeholder="Calificación">
+
+                <button onclick="agregarCalificacion()">Registrar</button>
+
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th>Alumno</th>
+                            <th>Materia</th>
+                            <th>Calificación</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="tablaCalificaciones"></tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+
+        <!-- ASISTENCIAS -->
+
+        <section id="asistencias" class="seccion oculto">
+
+            <div class="caja">
+
+                <h1>Asistencias</h1>
+
+                <input type="text" id="alumnoAsistencia" placeholder="Alumno">
+
+                <input type="date" id="fechaAsistencia">
+
+                <select id="estadoAsistencia">
+
+                    <option value="Presente">Presente</option>
+                    <option value="Falta">Falta</option>
+                    <option value="Retardo">Retardo</option>
+
+                </select>
+
+                <button onclick="agregarAsistencia()">Registrar</button>
+
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th>Alumno</th>
+                            <th>Fecha</th>
+                            <th>Estado</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="tablaAsistencias"></tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    /* =========================
+       BASE DE DATOS
+    ========================= */
+
+    let datos = JSON.parse(localStorage.getItem("controlEscolar"));
+
+
+    /* =========================
+       ARREGLAR USUARIO ANTERIOR
+    ========================= */
+
+    if(datos){
+
+        if(!datos.usuarios){
+            datos.usuarios = [];
+        }
+
+        let alexis = datos.usuarios.find(
+            u => u.usuario === "Alexis"
+        );
+
+        let admin = datos.usuarios.find(
+            u => u.usuario === "admin"
+        );
+
+        if(alexis && !admin){
+
+            alexis.usuario = "admin";
+            alexis.password = "1234";
+            alexis.rol = "Administrador";
+
+        }
+
+        if(!admin && !alexis){
+
+            datos.usuarios.push({
+                usuario:"admin",
+                password:"1234",
+                rol:"Administrador"
+            });
+
+        }
+
+        guardar();
+
+    }
+
+
+    /* =========================
+       CREAR BASE DE DATOS
+    ========================= */
+
+    if(!datos){
+
+        datos = {
+
+            usuarios:[
+                {
+                    usuario:"admin",
+                    password:"1234",
+                    rol:"Administrador"
+                }
+            ],
+
+            alumnos:[],
+            citas:[],
+            materias:[],
+            calificaciones:[],
+            asistencias:[]
+
+        };
+
+        guardar();
+
+    }
+
+
+    function guardar(){
+
+        localStorage.setItem(
+            "controlEscolar",
+            JSON.stringify(datos)
+        );
+
+    }
+
+
+    /* =========================
+       LOGIN
+    ========================= */
+
+    function iniciarSesion(){
+
+        let usuario =
+            document.getElementById("usuario").value.trim();
+
+        let password =
+            document.getElementById("password").value.trim();
+
+        let encontrado = datos.usuarios.find(
+
+            u =>
+            u.usuario.toLowerCase() === usuario.toLowerCase()
+            &&
+            u.password === password
+
+        );
+
+
+        if(encontrado){
+
+            document.getElementById("login")
+                .classList.add("oculto");
+
+            document.getElementById("sistema")
+                .classList.remove("oculto");
+
+            document.getElementById("usuarioActual")
+                .textContent = encontrado.usuario;
+
+            actualizarTodo();
+
+        }else{
+
+            document.getElementById("mensajeLogin")
+                .textContent =
+                "Usuario o contraseña incorrectos.";
+
+        }
+
+    }
+
+
+    function cerrarSesion(){
+
+        document.getElementById("sistema")
+            .classList.add("oculto");
+
+        document.getElementById("login")
+            .classList.remove("oculto");
+
+        document.getElementById("usuario").value = "";
+        document.getElementById("password").value = "";
+
+    }
+
+
+    /* =========================
+       CAMBIAR SECCIÓN
+    ========================= */
+
+    function mostrar(id){
+
+        let secciones =
+            document.querySelectorAll(".seccion");
+
+        secciones.forEach(
+
+            s => s.classList.add("oculto")
+
+        );
+
+        document.getElementById(id)
+            .classList.remove("oculto");
+
+        actualizarTodo();
+
+    }
+
+
+    /* =========================
+       ALUMNOS
+    ========================= */
+
+    function agregarAlumno(){
+
+        let nombre =
+            document.getElementById("nombreAlumno").value;
+
+        let matricula =
+            document.getElementById("matriculaAlumno").value;
+
+        let semestre =
+            document.getElementById("semestreAlumno").value;
+
+        let carrera =
+            document.getElementById("carreraAlumno").value;
+
+
+        if(
+            !nombre ||
+            !matricula ||
+            !semestre ||
+            !carrera
+        ){
+
+            alert("Completa todos los datos.");
+
+            return;
+
+        }
+
+
+        datos.alumnos.push({
+
+            nombre:nombre,
+            matricula:matricula,
+            semestre:semestre,
+            carrera:carrera
+
+        });
+
+
+        guardar();
+
+        document.getElementById("nombreAlumno").value="";
+        document.getElementById("matriculaAlumno").value="";
+        document.getElementById("semestreAlumno").value="";
+        document.getElementById("carreraAlumno").value="";
+
+        mostrarAlumnos();
+
+    }
+
+
+    function mostrarAlumnos(){
+
+        let tabla =
+            document.getElementById("tablaAlumnos");
+
+        tabla.innerHTML="";
+
+
+        datos.alumnos.forEach(
+
+            (a,index)=>{
+
+                tabla.innerHTML += `
+
+                <tr>
+
+                    <td>${a.nombre}</td>
+                    <td>${a.matricula}</td>
+                    <td>${a.semestre}</td>
+                    <td>${a.carrera}</td>
+
+                    <td>
+
+                        <button
+                            class="eliminar"
+                            onclick="eliminarAlumno(${index})"
+                        >
+                            Eliminar
+                        </button>
+
+                    </td>
+
+                </tr>
+
+                `;
+
+            }
+
+        );
+
+    }
+
+
+    function eliminarAlumno(index){
+
+        if(confirm("¿Eliminar este alumno?")){
+
+            datos.alumnos.splice(index,1);
+
+            guardar();
+
+            mostrarAlumnos();
+
+        }
+
+    }
+
+
+    /* =========================
+       CITAS
+    ========================= */
+
+    function registrarCita(){
+
+        let nombre =
+            document.getElementById("nombreCita").value;
+
+        let matricula =
+            document.getElementById("matriculaCita").value;
+
+        let semestre =
+            document.getElementById("semestreCita").value;
+
+        let carrera =
+            document.getElementById("carreraCita").value;
+
+        let fecha =
+            document.getElementById("fechaCita").value;
+
+        let hora =
+            document.getElementById("horaCita").value;
+
+
+        if(
+            !nombre ||
+            !matricula ||
+            !semestre ||
+            !carrera ||
+            !fecha ||
+            !hora
+        ){
+
+            alert("Completa todos los datos de la cita.");
+
+            return;
+
+        }
+
+
+        datos.citas.push({
+
+            nombre:nombre,
+            matricula:matricula,
+            semestre:semestre,
+            carrera:carrera,
+            fecha:fecha,
+            hora:hora
+
+        });
+
+
+        guardar();
+
+
+        document.getElementById("nombreCita").value="";
+        document.getElementById("matriculaCita").value="";
+        document.getElementById("semestreCita").value="";
+        document.getElementById("carreraCita").value="";
+        document.getElementById("fechaCita").value="";
+        document.getElementById("horaCita").value="";
+
+
+        alert("Cita registrada correctamente.");
+
+        mostrarCitas();
+
+    }
+
+
+    function mostrarCitas(){
+
+        let tabla =
+            document.getElementById("tablaCitas");
+
+        let buscar =
+            document.getElementById("buscarCita")
+                .value
+                .toLowerCase();
+
+
+        tabla.innerHTML="";
+
+
+        datos.citas.forEach(
+
+            (c,index)=>{
+
+                let texto =
+                    (
+                        c.nombre +
+                        " " +
+                        c.matricula +
+                        " " +
+                        c.semestre +
+                        " " +
+                        c.carrera +
+                        " " +
+                        c.fecha
+                    ).toLowerCase();
+
+
+                if(texto.includes(buscar)){
+
+                    tabla.innerHTML += `
+
+                    <tr>
+
+                        <td>${c.nombre}</td>
+                        <td>${c.matricula}</td>
+                        <td>${c.semestre}</td>
+                        <td>${c.carrera}</td>
+                        <td>${c.fecha}</td>
+                        <td>${c.hora}</td>
+
+                        <td>
+
+                            <button
+                                class="eliminar"
+                                onclick="eliminarCita(${index})"
+                            >
+                                Eliminar
+                            </button>
+
+                        </td>
+
+                    </tr>
+
+                    `;
+
+                }
+
+            }
+
+        );
+
+    }
+
+
+    function eliminarCita(index){
+
+        if(confirm("¿Eliminar esta cita?")){
+
+            datos.citas.splice(index,1);
+
+            guardar();
+
+            mostrarCitas();
+
+        }
+
+    }
+
+
+    /* =========================
+       MATERIAS
+    ========================= */
+
+    function agregarMateria(){
+
+        let nombre =
+            document.getElementById("nombreMateria").value;
+
+
+        if(!nombre){
+
+            alert("Escribe el nombre de la materia.");
+
+            return;
+
+        }
+
+
+        datos.materias.push({
+
+            nombre:nombre
+
+        });
+
+
+        guardar();
+
+        document.getElementById("nombreMateria").value="";
+
+        mostrarMaterias();
+
+    }
+
+
+    function mostrarMaterias(){
+
+        let tabla =
+            document.getElementById("tablaMaterias");
+
+        tabla.innerHTML="";
+
+
+        datos.materias.forEach(
+
+            (m,index)=>{
+
+                tabla.innerHTML += `
+
+                <tr>
+
+                    <td>${m.nombre}</td>
+
+                    <td>
+
+                        <button
+                            class="eliminar"
+                            onclick="eliminarMateria(${index})"
+                        >
+                            Eliminar
+                        </button>
+
+                    </td>
+
+                </tr>
+
+                `;
+
+            }
+
+        );
+
+    }
+
+
+    function eliminarMateria(index){
+
+        if(confirm("¿Eliminar esta materia?")){
+
+            datos.materias.splice(index,1);
+
+            guardar();
+
+            mostrarMaterias();
+
+        }
+
+    }
+
+
+    /* =========================
+       CALIFICACIONES
+    ========================= */
+
+    function agregarCalificacion(){
+
+        let alumno =
+            document.getElementById("alumnoCalificacion").value;
+
+        let materia =
+            document.getElementById("materiaCalificacion").value;
+
+        let calificacion =
+            document.getElementById("calificacion").value;
+
+
+        if(!alumno || !materia || !calificacion){
+
+            alert("Completa todos los datos.");
+
+            return;
+
+        }
+
+
+        datos.calificaciones.push({
+
+            alumno:alumno,
+            materia:materia,
+            calificacion:calificacion
+
+        });
+
+
+        guardar();
+
+        document.getElementById("alumnoCalificacion").value="";
+        document.getElementById("materiaCalificacion").value="";
+        document.getElementById("calificacion").value="";
+
+        mostrarCalificaciones();
+
+    }
+
+
+    function mostrarCalificaciones(){
+
+        let tabla =
+            document.getElementById("tablaCalificaciones");
+
+        tabla.innerHTML="";
+
+
+        datos.calificaciones.forEach(
+
+            (c,index)=>{
+
+                tabla.innerHTML += `
+
+                <tr>
+
+                    <td>${c.alumno}</td>
+                    <td>${c.materia}</td>
+                    <td>${c.calificacion}</td>
+
+                    <td>
+
+                        <button
+                            class="eliminar"
+                            onclick="eliminarCalificacion(${index})"
+                        >
+                            Eliminar
+                        </button>
+
+                    </td>
+
+                </tr>
+
+                `;
+
+            }
+
+        );
+
+    }
+
+
+    function eliminarCalificacion(index){
+
+        if(confirm("¿Eliminar calificación?")){
+
+            datos.calificaciones.splice(index,1);
+
+            guardar();
+
+            mostrarCalificaciones();
+
+        }
+
+    }
+
+
+    /* =========================
+       ASISTENCIAS
+    ========================= */
+
+    function agregarAsistencia(){
+
+        let alumno =
+            document.getElementById("alumnoAsistencia").value;
+
+        let fecha =
+            document.getElementById("fechaAsistencia").value;
+
+        let estado =
+            document.getElementById("estadoAsistencia").value;
+
+
+        if(!alumno || !fecha){
+
+            alert("Completa los datos.");
+
+            return;
+
+        }
+
+
+        datos.asistencias.push({
+
+            alumno:alumno,
+            fecha:fecha,
+            estado:estado
+
+        });
+
+
+        guardar();
+
+        document.getElementById("alumnoAsistencia").value="";
+        document.getElementById("fechaAsistencia").value="";
+
+        mostrarAsistencias();
+
+    }
+
+
+    function mostrarAsistencias(){
+
+        let tabla =
+            document.getElementById("tablaAsistencias");
+
+        tabla.innerHTML="";
+
+
+        datos.asistencias.forEach(
+
+            (a,index)=>{
+
+                tabla.innerHTML += `
+
+                <tr>
+
+                    <td>${a.alumno}</td>
+                    <td>${a.fecha}</td>
+                    <td>${a.estado}</td>
+
+                    <td>
+
+                        <button
+                            class="eliminar"
+                            onclick="eliminarAsistencia(${index})"
+                        >
+                            Eliminar
+                        </button>
+
+                    </td>
+
+                </tr>
+
+                `;
+
+            }
+
+        );
+
+    }
+
+
+    function eliminarAsistencia(index){
+
+        if(confirm("¿Eliminar asistencia?")){
+
+            datos.asistencias.splice(index,1);
+
+            guardar();
+
+            mostrarAsistencias();
+
+        }
+
+    }
+
+
+    /* =========================
+       ACTUALIZAR TODO
+    ========================= */
+
+    function actualizarTodo(){
+
+        mostrarAlumnos();
+        mostrarCitas();
+        mostrarMaterias();
+        mostrarCalificaciones();
+        mostrarAsistencias();
+
+        document.getElementById("totalAlumnos")
+            .textContent = datos.alumnos.length;
+
+        document.getElementById("totalCitas")
+            .textContent = datos.citas.length;
+
+        document.getElementById("totalMaterias")
+            .textContent = datos.materias.length;
+
+    }
+
+
+</script>
+
+</body>
+</html>
